@@ -1,5 +1,3 @@
-// components/DatasetForm.jsx
-
 import React, { useState } from 'react';
 import { useAccount } from 'wagmi';
 
@@ -22,46 +20,45 @@ const DatasetForm = () => {
       return;
     }
 
-    // Form data
     const formData = {
       name,
       size,
       category,
       file,
+      address
     };
-
-    // Call your smart contract function here
-    // Example:
-    // await uploadDatasetToBlockchain(formData);
 
     console.log('Form data:', formData);
   };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>Upload Dataset</h1>
+    <div className="container mt-5">
+      <h1 className="text-center">Upload Dataset</h1>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>Name:</label>
+        <div className="mb-3">
+          <label className="form-label">Name</label>
           <input
             type="text"
+            className="form-control"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
           />
         </div>
-        <div>
-          <label>Size:</label>
+        <div className="mb-3">
+          <label className="form-label">Size:</label>
           <input
             type="number"
+            className="form-control"
             value={size}
             onChange={(e) => setSize(e.target.value)}
             required
           />
         </div>
-        <div>
-          <label>Category:</label>
+        <div className="mb-3">
+          <label className="form-label">Category:</label>
           <select
+            className="form-select"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             required
@@ -70,20 +67,20 @@ const DatasetForm = () => {
             <option value="technology">Technology</option>
             <option value="art">Art</option>
             <option value="education">Education</option>
-            {/* Add more categories as needed */}
           </select>
         </div>
-        <div>
-          <label>Upload File:</label>
+        <div className="mb-3">
+          <label className="form-label">Upload File:</label>
           <input
             type="file"
+            className="form-control"
             onChange={handleFileChange}
             required
           />
         </div>
-        <div>
-          <button type="submit">Submit</button>
-        </div>
+        <button type="submit" className="btn btn-primary w-100">
+          Submit
+        </button>
       </form>
     </div>
   );

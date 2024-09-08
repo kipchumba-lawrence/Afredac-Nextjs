@@ -6,7 +6,7 @@ import DatasetForm from '../../components/datasetForm'; // Adjust the path if ne
 
 const UploadPage = () => {
   return (
-    <div>
+    <div className='container'>
         <ConnectButton />
       <DatasetForm />
     </div>
