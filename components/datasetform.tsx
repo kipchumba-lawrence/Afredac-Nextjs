@@ -1,87 +1,66 @@
 import React, { useState } from 'react';
-import { useAccount } from 'wagmi';
+import { useAccount, useWriteContract } from 'wagmi'
+import { abi } from '../abi/DataEntry.json';
+
+const contractAddress = '0x904FE37aD81e93aa4dC72cF44BAE9d96bB196735';
 
 const DatasetForm = () => {
-  const { address } = useAccount();
-  const [name, setName] = useState('');
-  const [size, setSize] = useState('');
-  const [category, setCategory] = useState('');
-  const [file, setFile] = useState(null);
-
-  const handleFileChange = (event) => {
-    setFile(event.target.files[0]);
-  };
+  const { address, isConnected } = useAccount();
+  const [data, setData] = useState('');
+  
+  const { writeContract, isLoading, isSuccess, isError, error } = useWriteContract();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
-    if (!address) {
+    if (!isConnected) {
       alert('Please connect your wallet first');
       return;
     }
-
-    const formData = {
-      name,
-      size,
-      category,
-      file,
-      address
-    };
-
-    console.log('Form data:', formData);
+    
+    writeContract({
+      address: contractAddress,
+      abi,
+      functionName: 'createEntry',
+      args: [data],
+    });
   };
 
   return (
     <div className="container mt-5">
-      <h1 className="text-center">Upload Dataset</h1>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label className="form-label">Name</label>
-          <input
-            type="text"
-            className="form-control"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Size:</label>
-          <input
-            type="number"
-            className="form-control"
-            value={size}
-            onChange={(e) => setSize(e.target.value)}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Category:</label>
-          <select
-            className="form-select"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            required
+      <h1 className="mb-4">Data Entry</h1>
+      {isConnected ? (
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <input
+              type="text"
+              className="form-control"
+              value={data}
+              onChange={(e) => setData(e.target.value)}
+              placeholder="Enter data"
+              required
+            />
+          </div>
+          <button 
+            type="submit" 
+            className="btn btn-primary"
+            disabled={isLoading}
           >
-            <option value="science">Science</option>
-            <option value="technology">Technology</option>
-            <option value="art">Art</option>
-            <option value="education">Education</option>
-          </select>
+            {isLoading ? 'Submitting...' : 'Submit'}
+          </button>
+        </form>
+      ) : (
+        <p>Please connect your wallet.</p>
+      )}
+      {isSuccess && (
+        <div className="alert alert-success mt-3">
+          Data entry successful!
         </div>
-        <div className="mb-3">
-          <label className="form-label">Upload File:</label>
-          <input
-            type="file"
-            className="form-control"
-            onChange={handleFileChange}
-            required
-          />
+      )}
+      {isError && (
+        <div className="alert alert-danger mt-3">
+          Error: {error?.message}
         </div>
-        <button type="submit" className="btn btn-primary w-100">
-          Submit
-        </button>
-      </form>
+      )}
     </div>
   );
 };
