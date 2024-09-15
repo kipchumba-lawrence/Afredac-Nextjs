@@ -1,13 +1,10 @@
 // pages/upload.js
-
 import React from 'react';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
-import DatasetForm from '../../components/datasetForm'; // Adjust the path if needed
+import DatasetForm from '../../components/datasetForm'; 
 
 const UploadPage = () => {
   return (
     <div className='container'>
-        <ConnectButton />
       <DatasetForm />
     </div>
   );
