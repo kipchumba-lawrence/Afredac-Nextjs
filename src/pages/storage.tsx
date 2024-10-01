@@ -1,6 +1,7 @@
 // pages/upload.js
 import React from 'react';
 import Fileupload from '../../components/fileupload'; 
+import DatasetForm from '../../components/datasetform';
 
 // const client =  create()
 // client.login('zaphod@beeblebrox.galaxy')
@@ -8,6 +9,7 @@ import Fileupload from '../../components/fileupload';
 const Storage = () => {
   return (
     <div className='container'>
+      <DatasetForm />
       <Fileupload />
     </div>
   );
