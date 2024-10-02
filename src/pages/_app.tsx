@@ -20,7 +20,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     <WagmiProvider config={config}>
       <QueryClientProvider client={client}>
         <RainbowKitProvider>
-        <ConnectButton />
+        {/* <ConnectButton /> */}
           <Component {...pageProps} />
         </RainbowKitProvider>
       </QueryClientProvider>
