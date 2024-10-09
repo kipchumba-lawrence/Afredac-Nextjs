@@ -12,13 +12,13 @@ const DatasetForm = () => {
   const [category, setCategory] = useState('');
   const [uploadStatus, setUploadStatus] = useState('');
   const [cid, setCid] = useState('');
-  const [isClient, setIsClient] = useState(false); // State to track client-side rendering
+  const [isClient, setIsClient] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { writeContract, isLoading, isSuccess, isError, error } = useWriteContract();
+  const { writeContract, isSuccess, isError, error } = useWriteContract();
 
-  // Ensure the component only renders after client-side mounting
   useEffect(() => {
-    setIsClient(true); // Now we are sure it's the client
+    setIsClient(true);
   }, []);
 
   const handleFileChange = (event) => {
@@ -38,7 +38,7 @@ const DatasetForm = () => {
   
       setUploadStatus('Fetching spaces...');
       const spaces = await client.spaces();
-      console.log('Available spaces:', spaces); // Log available spaces for debugging
+      console.log('Available spaces:', spaces);
   
       const afredacSpace = spaces.find(space => space.name === 'afredac');
   
@@ -51,7 +51,7 @@ const DatasetForm = () => {
   
       setUploadStatus('Uploading file to "afredac" space...');
       const uploadResult = await client.uploadFile(file);
-      console.log('Upload result:', uploadResult); // Log the upload result
+      console.log('Upload result:', uploadResult);
   
       if (!uploadResult) {
         throw new Error('File upload failed. CID is missing.');
@@ -69,32 +69,34 @@ const DatasetForm = () => {
   }, [file]);
   
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event : React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
     if (!isConnected) {
       alert('Please connect your wallet first');
       return;
     }
 
+    setIsSubmitting(true);
     try {
       const uploadedCid = await uploadFile();
-      const dateCreated = Math.floor(Date.now() / 1000); // Unix timestamp
+      const dateCreated = Math.floor(Date.now() / 1000);
 
       writeContract({
         address: contractAddress,
         abi,
         functionName: 'addDataset',
-        args: [ name, category, uploadedCid],
+        args: [name, category, uploadedCid],
       });
     } catch (error) {
       console.error('Error during submission:', error);
       setUploadStatus(`Error during submission: ${error.message}`);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  // Only render the form if we are on the client
   if (!isClient) {
-    return null; // Return nothing while SSR
+    return null;
   }
 
   return (
@@ -133,9 +135,9 @@ const DatasetForm = () => {
           <button 
             type="submit" 
             className="btn btn-primary"
-            disabled={isLoading}
+            disabled={isSubmitting}
           >
-            {isLoading ? 'Submitting...' : 'Submit Dataset'}
+            {isSubmitting ? 'Submitting...' : 'Submit Dataset'}
           </button>
         </form>
       ) : (
