@@ -8,7 +8,12 @@ const contractAddress = '0x948e11468314753B813fE3e30765e33E6Ce5dE29';
 const RetrieveDatasets = () => {
   const { address, isConnected } = useAccount();
   const [datasets, setDatasets] = useState([]);
-
+  interface Dataset {
+    cid: string;
+    name: string;
+    category: string;
+    owner: string;
+  }
   // Fetch all datasets using the getAllDatasets function
   const { data, isError, isLoading } = useContractRead({
     address: contractAddress,
@@ -32,7 +37,7 @@ console.log(data);
       {isConnected ? (
         <div className="row">
           {datasets.map((dataset, index) => (
-            <div className="col-md-4 mb-4" key={index}>
+            <div className="col-md-3 mb-4" key={index}>
               <div
                 className={`card ${styles.datasetCard}`}
                 onClick={() => window.open(`https://${dataset.cid}.ipfs.w3s.link/`, '_blank')}
