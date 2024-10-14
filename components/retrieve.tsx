@@ -19,7 +19,7 @@ const RetrieveDatasets = () => {
     address: contractAddress,
     abi,
     functionName: 'getAllDatasets',
-    watch: true, // Automatically refresh data
+    // watch: true, // Automatically refresh data
   });
 
   useEffect(() => {
